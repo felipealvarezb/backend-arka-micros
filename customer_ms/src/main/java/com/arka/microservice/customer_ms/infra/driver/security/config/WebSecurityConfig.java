@@ -3,6 +3,7 @@ package com.arka.microservice.customer_ms.infra.driver.security.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -21,6 +22,12 @@ public class WebSecurityConfig {
   public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
     return http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
+            .authorizeExchange(exchanges -> exchanges
+                    .pathMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                    .pathMatchers("/api/auth/**").permitAll()
+                    .anyExchange().authenticated()
+            )
             .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
             .build();
   }
