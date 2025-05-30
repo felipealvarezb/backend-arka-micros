@@ -1,4 +1,4 @@
-package com.arka.microservice.customer_ms.infra.driver.security.service;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.service;
 
 import com.arka.microservice.customer_ms.domain.ports.in.IUserDetailInPort;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
-package com.arka.microservice.customer_ms.infra.driver.security.util;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.util;
 
-import com.arka.microservice.customer_ms.infra.driver.security.config.JwtProperties;
+import com.arka.microservice.customer_ms.infra.driver.rest.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

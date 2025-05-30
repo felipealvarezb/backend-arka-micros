@@ -1,13 +1,12 @@
-package com.arka.microservice.customer_ms.infra.driver.security.dto;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.arka.microservice.customer_ms.infra.driver.security.util.SecurityConstants.*;
+import static com.arka.microservice.customer_ms.infra.driver.rest.security.util.SecurityConstants.*;
 
 
 @Data

@@ -1,8 +1,8 @@
-package com.arka.microservice.customer_ms.infra.driver.security.config;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.config;
 
 import com.arka.microservice.customer_ms.domain.exception.UnauthorizedException;
 import com.arka.microservice.customer_ms.domain.exception.SecurityException;
-import com.arka.microservice.customer_ms.infra.driver.security.util.JwtUtil;
+import com.arka.microservice.customer_ms.infra.driver.rest.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

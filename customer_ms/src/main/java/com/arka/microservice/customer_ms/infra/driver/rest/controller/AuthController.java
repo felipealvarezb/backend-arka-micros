@@ -1,8 +1,8 @@
 package com.arka.microservice.customer_ms.infra.driver.rest.controller;
 
 import com.arka.microservice.customer_ms.domain.ports.in.IAuthInPort;
-import com.arka.microservice.customer_ms.infra.driver.security.dto.AuthDtoRequest;
-import com.arka.microservice.customer_ms.infra.driver.security.dto.AuthDtoResponse;
+import com.arka.microservice.customer_ms.infra.driver.rest.security.dto.AuthDtoRequest;
+import com.arka.microservice.customer_ms.infra.driver.rest.security.dto.AuthDtoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

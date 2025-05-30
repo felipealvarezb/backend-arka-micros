@@ -1,4 +1,4 @@
-package com.arka.microservice.customer_ms.infra.driver.security.adapter;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.adapter;
 
 import com.arka.microservice.customer_ms.domain.ports.out.IPasswordEncodeOutPort;
 import lombok.RequiredArgsConstructor;

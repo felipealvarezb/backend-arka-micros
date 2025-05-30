@@ -32,12 +32,20 @@ public class UserUseCaseImpl implements IUserInPort {
                     .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
                     .cache();
     return Mono.just(userModel)
-            .flatMap(user -> UserValidation.validateFirstName(user.getFirstName()).thenReturn(user))
-            .flatMap(user -> UserValidation.validateEmail(user.getEmail()).thenReturn(user))
-            .flatMap(user -> UserValidation.validatePhone(user.getPhone()).thenReturn(user))
-            .flatMap(user -> UserValidation.validatePassword(user.getPassword()).thenReturn(user))
-            .flatMap(user -> validateEmailDoesNotExist(user.getEmail()).thenReturn(user))
-            .flatMap(user -> validateDniDoesNotExist(user.getDni()).thenReturn(user))
+            .flatMap(user ->
+                    Mono.when(
+                            UserValidation.validateFirstName(user.getFirstName()),
+                            UserValidation.validateEmail(user.getEmail()),
+                            UserValidation.validatePhone(user.getPhone()),
+                            UserValidation.validatePassword(user.getPassword())
+                    ).thenReturn(user)
+            )
+            .flatMap(user ->
+                    Mono.when(
+                            validateEmailDoesNotExist(user.getEmail()),
+                            validateDniDoesNotExist(user.getDni())
+                    ).thenReturn(user)
+            )
             .flatMap(user -> rolMono.map(rol ->{
               user.setRol(rol);
               return user;

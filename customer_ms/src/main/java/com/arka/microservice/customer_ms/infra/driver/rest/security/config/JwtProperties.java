@@ -1,4 +1,4 @@
-package com.arka.microservice.customer_ms.infra.driver.security.config;
+package com.arka.microservice.customer_ms.infra.driver.rest.security.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
