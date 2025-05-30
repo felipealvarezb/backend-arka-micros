@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
-  private Long id;
-  private String email;
+public class UserProfileDTO {
   private String firstName;
   private String lastName;
+  private String email;
+  private String phone;
+  private String dni;
 }

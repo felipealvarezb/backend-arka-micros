@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.arka.microservice.customer_ms.infra.driver.rest.security.util.SecurityConstants.*;
+import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.*;
 
 
 @Data

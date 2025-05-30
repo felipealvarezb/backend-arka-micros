@@ -3,7 +3,8 @@ package com.arka.microservice.customer_ms.infra.driver.rest.controller;
 import com.arka.microservice.customer_ms.domain.model.UserModel;
 import com.arka.microservice.customer_ms.domain.ports.in.IUserInPort;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.RegisterUserRequest;
-import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserResponse;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.UpdateUserProfileRequest;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserProfileDTO;
 import com.arka.microservice.customer_ms.infra.driver.rest.mapper.IUserRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,16 @@ public class UserController {
 
   @GetMapping("/profile")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<UserResponse> getProfile() {
+  public Mono<UserProfileDTO> getProfile() {
     return userInPort.getUserProfileInfo()
-            .map(userMapper::modelToUserResponse);
+            .map(userMapper::modelToUserProfileDTO);
+  }
+
+  @PutMapping("/profile")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<UserProfileDTO> updateProfile(@RequestBody UpdateUserProfileRequest request) {
+    return userInPort.updateUserProfile(userMapper.updateUserProfileRequestToModel(request))
+            .map(userMapper::modelToUserProfileDTO);
   }
 
 }

@@ -10,8 +10,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import static com.arka.microservice.customer_ms.infra.driver.rest.security.util.SecurityConstants.INVALID_PASSWORD;
-import static com.arka.microservice.customer_ms.infra.driver.rest.security.util.SecurityConstants.USER_EMAIL_NOT_FOUND;
+import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.INVALID_PASSWORD;
+import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.USER_EMAIL_NOT_FOUND;
 
 @Component
 @RequiredArgsConstructor

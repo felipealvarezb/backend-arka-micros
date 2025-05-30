@@ -66,12 +66,42 @@ public class UserUseCaseImpl implements IUserInPort {
 
   @Override
   public Mono<UserModel> getUserProfileInfo() {
+    return getAuthenticatedEmail()
+            .flatMap(email -> userOutPort.findByEmail(email)
+                    .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+            );
+  }
+
+  @Override
+  public Mono<UserModel> updateUserProfile(UserModel userModel) {
+    return getAuthenticatedEmail()
+            .flatMap(email -> userOutPort.findByEmail(email)
+                    .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+                    .flatMap(existingUser -> validateProfileUpdate(existingUser, userModel))
+                    .flatMap(userOutPort::save)
+            );
+  }
+
+  private Mono<UserModel> validateProfileUpdate(UserModel existingUser, UserModel updatedUser) {
+    return Mono.when(
+                    UserValidation.validateFirstName(updatedUser.getFirstName()),
+                    UserValidation.validatePhone(updatedUser.getPhone())
+            )
+            .thenReturn(existingUser)
+            .map(user -> {
+              user.setFirstName(updatedUser.getFirstName());
+              user.setLastName(updatedUser.getLastName());
+              user.setPhone(updatedUser.getPhone());
+              user.setUpdatedAt(LocalDateTime.now());
+              return user;
+            });
+  }
+
+  private Mono<String> getAuthenticatedEmail() {
     return ReactiveSecurityContextHolder.getContext()
-            .flatMap(context -> {
+            .map(context -> {
               Authentication authentication = context.getAuthentication();
-              String email = authentication.getName();
-              return userOutPort.findByEmail(email)
-                      .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+              return authentication.getName();
             });
   }
 

@@ -22,4 +22,5 @@ public class UserConstants {
   public static final String DNI_ALREADY_EXISTS = "DNI already exists";
   public static final String USER_ROLE_NAME = "USER";
   public static final String USER_ROLE_NOT_FOUND = "User role not found";
+  public static final String USER_NOT_FOUND = "User not found";
 }

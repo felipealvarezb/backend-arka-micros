@@ -16,6 +16,8 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.*;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -40,15 +42,15 @@ public class JwtAuthenticationFilter implements WebFilter {
                                 userDetails, null, userDetails.getAuthorities()))
                         .flatMap(authentication -> chain.filter(exchange)
                                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)))
-                        .switchIfEmpty(Mono.error(new UnauthorizedException(ERR_INVALID_TOKEN, "Invalid token")));
+                        .switchIfEmpty(Mono.error(new UnauthorizedException(ERR_INVALID_TOKEN, TOKEN_INVALID)));
 
               } catch (Exception e) {
                 if (e.getMessage().contains("expired")) {
                   log.info("Token has expired: {}", e.getMessage());
-                  return Mono.error(new SecurityException(ERR_EXPIRED_TOKEN, "Token has expired"));
+                  return Mono.error(new SecurityException(ERR_EXPIRED_TOKEN, TOKEN_EXPIRED));
                 }
                 log.info("Invalid token format: {}", e.getMessage());
-                return Mono.error(new SecurityException(ERR_INVALID_TOKEN, "Invalid token format"));
+                return Mono.error(new SecurityException(ERR_INVALID_TOKEN, TOKEN_INVALID));
               }
             })
             .onErrorResume(e -> {
@@ -62,7 +64,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
   private Mono<String> resolveTokenReactive(ServerHttpRequest request) {
     return Mono.justOrEmpty(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
-            .filter(bearerToken -> bearerToken.startsWith("Bearer "))
+            .filter(bearerToken -> bearerToken.startsWith(TOKEN_PREFIX))
             .map(bearerToken -> bearerToken.substring(7));
   }
 

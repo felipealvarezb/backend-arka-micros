@@ -8,4 +8,5 @@ import java.nio.channels.FileChannel;
 public interface IUserInPort {
   Mono<UserModel> registerUser(UserModel userModel);
   Mono<UserModel> getUserProfileInfo();
+  Mono<UserModel> updateUserProfile(UserModel userModel);
 }

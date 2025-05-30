@@ -1,4 +1,4 @@
-package com.arka.microservice.customer_ms.infra.driver.rest.security.util;
+package com.arka.microservice.customer_ms.domain.util;
 
 public class SecurityConstants {
 
@@ -7,6 +7,8 @@ public class SecurityConstants {
   }
 
   public static final String TOKEN_PREFIX = "Bearer ";
+  public static final String TOKEN_EXPIRED = "Token has expired";
+  public static final String TOKEN_INVALID = "Invalid token format";
   public static final String EMAIL_REQUIRED = "Email is required";
   public static final String EMAIL_FORMAT_ERROR = "Please enter a valid email address";
   public static final String PASSWORD_REQUIRED = "Password is required";

@@ -2,7 +2,8 @@ package com.arka.microservice.customer_ms.infra.driver.rest.mapper;
 
 import com.arka.microservice.customer_ms.domain.model.UserModel;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.RegisterUserRequest;
-import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserResponse;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.UpdateUserProfileRequest;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserProfileDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,6 +17,8 @@ public interface IUserRestMapper {
   @Mapping(target = "updatedAt", ignore = true)
   UserModel dtoToModel(RegisterUserRequest request);
 
-  UserResponse modelToUserResponse(UserModel model);
+  UserProfileDTO modelToUserProfileDTO(UserModel model);
+
+  UserModel updateUserProfileRequestToModel(UpdateUserProfileRequest request);
 
 }
