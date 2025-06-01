@@ -21,4 +21,11 @@ public class RolRepositoryAdapter implements IRolOutPort {
             .findByName(name)
             .map(rolEntityMapper::entityToModel);
   }
+
+  @Override
+  public Mono<RolModel> findById(Long id) {
+    return rolEntityRepository
+            .findById(id)
+            .map(rolEntityMapper::entityToModel);
+  }
 }

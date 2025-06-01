@@ -20,7 +20,7 @@ public class UserModel {
   private String email;
   private String password;
   private Boolean isActive;
-  private RolModel rol;
+  private Long roleId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }
