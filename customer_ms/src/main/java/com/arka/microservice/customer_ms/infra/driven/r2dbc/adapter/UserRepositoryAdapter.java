@@ -6,6 +6,7 @@ import com.arka.microservice.customer_ms.infra.driven.r2dbc.mapper.IUserEntityMa
 import com.arka.microservice.customer_ms.infra.driven.r2dbc.repository.IUserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -27,6 +28,13 @@ public class UserRepositoryAdapter implements IUserOutPort {
   public Mono<UserModel> findByDni(String dni) {
     return userEntityRepository
             .findByDni(dni)
+            .map(userEntityMapper::entityToModel);
+  }
+
+  @Override
+  public Flux<UserModel> findAll() {
+    return userEntityRepository
+            .findAll()
             .map(userEntityMapper::entityToModel);
   }
 

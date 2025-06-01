@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.arka.microservice.customer_ms.domain.util.UserConstants.*;
 
@@ -75,6 +77,57 @@ public class UserUseCaseImpl implements IUserInPort {
             );
   }
 
+  @Override
+  public Mono<UserModel> registerAdmin(UserModel userModel) {
+    return getAuthenticatedEmail()
+            .flatMap(userOutPort::findByEmail)
+            .switchIfEmpty(Mono.error(new RuntimeException("Usuario autenticado no encontrado")))
+            .flatMap(authUser -> rolOutPort.findById(authUser.getRoleId())
+                    .filter(rol -> "ROLE_ADMIN".equals(rol.getName()))
+                    .switchIfEmpty(Mono.error(new RuntimeException("No tienes permisos para crear otro administrador"))))
+            .then(rolOutPort.findByName(ADMIN_ROLE_NAME)
+                    .map(RolModel::getId))
+            .flatMap(adminRoleId -> Mono.just(userModel)
+                    .flatMap(user -> Mono.when(
+                            UserValidation.validateFirstName(user.getFirstName()),
+                            UserValidation.validateEmail(user.getEmail()),
+                            UserValidation.validatePhone(user.getPhone()),
+                            UserValidation.validatePassword(user.getPassword())
+                    ).thenReturn(user))
+                    .flatMap(user -> Mono.when(
+                            validateEmailDoesNotExist(user.getEmail()),
+                            validateDniDoesNotExist(user.getDni())
+                    ).thenReturn(user))
+                    .map(user -> {
+                      user.setRoleId(adminRoleId);
+                      user.setIsActive(true);
+                      user.setCreatedAt(LocalDateTime.now());
+                      user.setUpdatedAt(LocalDateTime.now());
+                      return user;
+                    })
+                    .flatMap(this::encodePassword)
+                    .flatMap(userOutPort::save));
+  }
+
+  @Override
+  public Flux<UserModel> listAllUsers(Optional<String> email, Optional<String> dni, Optional<String> name, int page) {
+    Flux<UserModel> usersFlux = userOutPort.findAll();
+
+    if (email.isPresent()) {
+      usersFlux = usersFlux.filter(user -> user.getEmail().equalsIgnoreCase(email.get()));
+    }
+    if (dni.isPresent()) {
+      usersFlux = usersFlux.filter(user -> user.getDni().equals(dni.get()));
+    }
+    if (name.isPresent()) {
+      usersFlux = usersFlux.filter(user -> user.getFirstName().equalsIgnoreCase(name.get()));
+    }
+
+    return usersFlux
+            .skip(page * 50)
+            .take(50);
+  }
+
   private Mono<UserModel> validateProfileUpdate(UserModel existingUser, UserModel updatedUser) {
     return Mono.when(
                     UserValidation.validateFirstName(updatedUser.getFirstName()),
@@ -97,7 +150,6 @@ public class UserUseCaseImpl implements IUserInPort {
               return authentication.getName();
             });
   }
-
 
   private Mono<Void> validateEmailDoesNotExist(String email) {
     return userOutPort.findByEmail(email)
