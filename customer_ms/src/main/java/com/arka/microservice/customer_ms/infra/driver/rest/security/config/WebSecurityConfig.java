@@ -27,6 +27,8 @@ public class WebSecurityConfig {
                     .pathMatchers(HttpMethod.POST, "/api/user/register").permitAll()
                     .pathMatchers(HttpMethod.GET, "/api/user/profile").hasAnyAuthority("ROLE_USER")
                     .pathMatchers(HttpMethod.GET, "/api/address/**").hasAnyAuthority("ROLE_USER")
+                    .pathMatchers(HttpMethod.POST, "/api/admin/register").hasAnyAuthority("ROLE_ADMIN")
+                    .pathMatchers(HttpMethod.POST, "/api/admin/user-list").hasAnyAuthority("ROLE_ADMIN")
                     .pathMatchers("/api/auth/**").permitAll()
                     .anyExchange().authenticated()
             )
