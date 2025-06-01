@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Table(name = "user_management.addresses")
@@ -38,8 +39,8 @@ public class AddressEntity {
   private Long userId;
 
   @Column("created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }

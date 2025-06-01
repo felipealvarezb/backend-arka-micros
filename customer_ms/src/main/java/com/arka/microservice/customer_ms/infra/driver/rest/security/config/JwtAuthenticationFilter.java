@@ -54,10 +54,8 @@ public class JwtAuthenticationFilter implements WebFilter {
               }
             })
             .onErrorResume(e -> {
-              if (!(e instanceof SecurityException) && !(e instanceof UnauthorizedException)) {
-                log.info("Authentication error: {}", e.getMessage());
-              }
-              return chain.filter(exchange);
+              log.error("Authentication error: {}", e.getMessage());
+              return Mono.error(e);
             })
             .switchIfEmpty(chain.filter(exchange));
   }
@@ -65,7 +63,11 @@ public class JwtAuthenticationFilter implements WebFilter {
   private Mono<String> resolveTokenReactive(ServerHttpRequest request) {
     return Mono.justOrEmpty(request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
             .filter(bearerToken -> bearerToken.startsWith(TOKEN_PREFIX))
-            .map(bearerToken -> bearerToken.substring(7));
+            .map(bearerToken -> {
+              String token = bearerToken.substring(7);
+              log.info("Token extraído: {}", token);
+              return token;
+            });
   }
 
 }
