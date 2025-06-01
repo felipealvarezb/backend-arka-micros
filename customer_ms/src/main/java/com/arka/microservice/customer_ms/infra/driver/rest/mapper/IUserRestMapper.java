@@ -11,7 +11,7 @@ import org.mapstruct.Mapping;
 public interface IUserRestMapper {
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "rol", ignore = true)
+  @Mapping(target = "roleId", ignore = true)
   @Mapping(target = "isActive", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)

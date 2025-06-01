@@ -25,6 +25,8 @@ public class WebSecurityConfig {
             .authorizeExchange(exchanges -> exchanges
                     .pathMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                     .pathMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/user/profile").hasAnyAuthority("ROLE_USER")
+                    .pathMatchers(HttpMethod.GET, "/api/address/**").hasAnyAuthority("ROLE_USER")
                     .pathMatchers("/api/auth/**").permitAll()
                     .anyExchange().authenticated()
             )

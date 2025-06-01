@@ -1,5 +1,7 @@
 package com.arka.microservice.customer_ms.infra.driver.rest.security.util;
 
+import com.arka.microservice.customer_ms.domain.model.UserModel;
+import com.arka.microservice.customer_ms.domain.ports.out.IRolOutPort;
 import com.arka.microservice.customer_ms.infra.driver.rest.security.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -16,12 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.arka.microservice.customer_ms.domain.util.UserConstants.USER_ROLE_NOT_FOUND;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class JwtUtil {
 
   private final JwtProperties jwtProperties;
+  private final IRolOutPort rolOutPort;
 
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
@@ -53,17 +59,22 @@ public class JwtUtil {
     return extractExpiration(token).before(new Date());
   }
 
-  public String generateToken(String username) {
-    Map<String, Object> claims = new HashMap<>();
-    return createToken(claims, username);
+  public Mono<String> generateToken(UserModel user) {
+    return rolOutPort.findById(user.getRoleId())
+            .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+            .map(rol -> {
+              Map<String, Object> claims = new HashMap<>();
+              claims.put("role", rol.getName());
+              return createToken(claims, user.getEmail());
+            });
   }
 
   private String createToken(Map<String, Object> claims, String subject) {
     return Jwts.builder()
-            .setClaims(claims)
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime()))
+            .addClaims(claims)
             .signWith(getSigningKey())
             .compact();
   }

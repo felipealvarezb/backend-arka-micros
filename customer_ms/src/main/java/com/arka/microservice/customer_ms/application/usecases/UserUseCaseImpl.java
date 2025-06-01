@@ -27,27 +27,24 @@ public class UserUseCaseImpl implements IUserInPort {
 
   @Override
   public Mono<UserModel> registerUser(UserModel userModel) {
-    Mono<RolModel> rolMono =
-            rolOutPort.findByName(USER_ROLE_NAME)
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
-                    .cache();
+    Mono<Long> rolIdMono = rolOutPort.findByName(USER_ROLE_NAME)
+            .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+            .map(RolModel::getId)
+            .cache();
+
     return Mono.just(userModel)
-            .flatMap(user ->
-                    Mono.when(
-                            UserValidation.validateFirstName(user.getFirstName()),
-                            UserValidation.validateEmail(user.getEmail()),
-                            UserValidation.validatePhone(user.getPhone()),
-                            UserValidation.validatePassword(user.getPassword())
-                    ).thenReturn(user)
-            )
-            .flatMap(user ->
-                    Mono.when(
-                            validateEmailDoesNotExist(user.getEmail()),
-                            validateDniDoesNotExist(user.getDni())
-                    ).thenReturn(user)
-            )
-            .flatMap(user -> rolMono.map(rol ->{
-              user.setRol(rol);
+            .flatMap(user -> Mono.when(
+                    UserValidation.validateFirstName(user.getFirstName()),
+                    UserValidation.validateEmail(user.getEmail()),
+                    UserValidation.validatePhone(user.getPhone()),
+                    UserValidation.validatePassword(user.getPassword())
+            ).thenReturn(user))
+            .flatMap(user -> Mono.when(
+                    validateEmailDoesNotExist(user.getEmail()),
+                    validateDniDoesNotExist(user.getDni())
+            ).thenReturn(user))
+            .flatMap(user -> rolIdMono.map(rolId -> {
+              user.setRoleId(rolId);
               return user;
             }))
             .flatMap(this::encodePassword)
@@ -57,11 +54,7 @@ public class UserUseCaseImpl implements IUserInPort {
               user.setUpdatedAt(LocalDateTime.now());
               return user;
             })
-            .flatMap(userOutPort::save)
-           .flatMap(saved -> rolMono.map(rol -> {
-             saved.setRol(rol);
-             return saved;
-           }));
+            .flatMap(userOutPort::save);
   }
 
   @Override

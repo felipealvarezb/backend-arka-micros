@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface IRolOutPort {
   Mono<RolModel> findByName(String name);
+  Mono<RolModel> findById(Long id);
 }

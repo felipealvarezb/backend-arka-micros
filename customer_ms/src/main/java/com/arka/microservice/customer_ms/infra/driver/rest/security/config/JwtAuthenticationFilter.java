@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,10 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.*;
 
@@ -35,21 +41,23 @@ public class JwtAuthenticationFilter implements WebFilter {
             .flatMap(token -> {
               try {
                 String username = jwtUtil.extractUsername(token);
-                log.info("Username: {}", username);
+                String role = jwtUtil.extractClaim(token, claims -> claims.get("role", String.class)); // 🔥 Extraemos el rol
+
+                log.info("Usuario autenticado: {} con rol {}", username, role);
+
                 return userDetailsService.findByUsername(username)
                         .filter(userDetails -> jwtUtil.validateToken(token, userDetails))
-                        .map(userDetails -> new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()))
+                        .map(userDetails -> {
+                          List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role)); // 🔥 Asignamos el rol desde el token
+
+                          return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+                        })
                         .flatMap(authentication -> chain.filter(exchange)
                                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication)))
                         .switchIfEmpty(Mono.error(new UnauthorizedException(ERR_INVALID_TOKEN, TOKEN_INVALID)));
 
               } catch (Exception e) {
-                if (e.getMessage().contains("expired")) {
-                  log.info("Token has expired: {}", e.getMessage());
-                  return Mono.error(new SecurityException(ERR_EXPIRED_TOKEN, TOKEN_EXPIRED));
-                }
-                log.info("Invalid token format: {}", e.getMessage());
+                log.error("Error en autenticación: {}", e.getMessage());
                 return Mono.error(new SecurityException(ERR_INVALID_TOKEN, TOKEN_INVALID));
               }
             })

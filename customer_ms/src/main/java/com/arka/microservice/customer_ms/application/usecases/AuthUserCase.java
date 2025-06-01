@@ -30,7 +30,7 @@ public class AuthUserCase implements IAuthInPort {
                       if (!matches) {
                         return Mono.error(new BadCredentialsException(INVALID_PASSWORD));
                       }
-                      return Mono.just(jwtUtil.generateToken(user.getEmail()));
+                      return jwtUtil.generateToken(user);
                     })
             );
   }
