@@ -4,6 +4,7 @@ import com.arka.microservice.customer_ms.domain.model.UserModel;
 import com.arka.microservice.customer_ms.domain.ports.in.IUserInPort;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.RegisterUserRequest;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserProfileDTO;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserWebClientDTO;
 import com.arka.microservice.customer_ms.infra.driver.rest.mapper.IUserRestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class AdminController {
     return userInPort.registerAdmin(userMapper.dtoToModel(request));
   }
 
+  @PostMapping("/register/admin-logistic")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Mono<UserModel> registerAdminLogistic(@RequestBody RegisterUserRequest request) {
+    return userInPort.registerAdminLogistic(userMapper.dtoToModel(request));
+  }
+
   @GetMapping("/user-list")
   @ResponseStatus(HttpStatus.OK)
   public Flux<UserProfileDTO> getUserList(@RequestParam Optional<String> email,
@@ -34,6 +41,12 @@ public class AdminController {
                                           @RequestParam Optional<String> name,
                                           @RequestParam(defaultValue = "0") int page) {
     return userInPort.listAllUsers(email, dni, name, page).map(userMapper::modelToUserProfileDTO);
+  }
+
+  @GetMapping("/admin-logistic/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Mono<UserWebClientDTO> getAdminLogistic(@PathVariable Long id) {
+    return userInPort.getAdminLogistic(id).map(userMapper::modelToUserWebClientDTO);
   }
 
 }

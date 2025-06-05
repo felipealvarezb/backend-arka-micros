@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 public interface IUserOutPort {
   Mono<UserModel> findByEmail(String email);
   Mono<UserModel> findByDni(String dni);
+  Mono<UserModel> findById(Long id);
   Flux<UserModel> findAll();
   Mono<UserModel> save(UserModel user);
 

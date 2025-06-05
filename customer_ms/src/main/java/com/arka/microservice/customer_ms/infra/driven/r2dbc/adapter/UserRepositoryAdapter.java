@@ -32,6 +32,12 @@ public class UserRepositoryAdapter implements IUserOutPort {
   }
 
   @Override
+  public Mono<UserModel> findById(Long id) {
+    return userEntityRepository.findById(id)
+            .map(userEntityMapper::entityToModel);
+  }
+
+  @Override
   public Flux<UserModel> findAll() {
     return userEntityRepository
             .findAll()

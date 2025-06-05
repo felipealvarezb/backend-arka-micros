@@ -4,6 +4,7 @@ import com.arka.microservice.customer_ms.domain.model.UserModel;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.RegisterUserRequest;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.request.UpdateUserProfileRequest;
 import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserProfileDTO;
+import com.arka.microservice.customer_ms.infra.driver.rest.dto.response.UserWebClientDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -20,5 +21,7 @@ public interface IUserRestMapper {
   UserProfileDTO modelToUserProfileDTO(UserModel model);
 
   UserModel updateUserProfileRequestToModel(UpdateUserProfileRequest request);
+
+  UserWebClientDTO modelToUserWebClientDTO(UserModel model);
 
 }
