@@ -10,10 +10,9 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
-@Table(name = "products")
+@Table(name = "catalog_management.products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,16 +38,10 @@ public class ProductEntity {
   private Boolean isActive;
 
   @Column("category_id")
-  @MappedCollection(idColumn = "id")
   private Long categoryId;
 
   @Column("brand_id")
-  @MappedCollection(idColumn = "id")
   private Long brandId;
-
-  @Column("attributes")
-  @MappedCollection(idColumn = "id")
-  private List<ProductAttribute> attributes;
 
   @Column("created_at")
   private LocalDateTime createdAt;

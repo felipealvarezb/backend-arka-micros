@@ -9,9 +9,8 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
-@Table(name = "countries")
+@Table(name = "catalog_management.countries")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,6 +25,7 @@ public class CountryEntity {
 
   @Column("logistic_supervisor_id")
   private Long logisticSupervisorId;
+
   @Column("created_at")
   private LocalDateTime createdAt;
 

@@ -4,11 +4,9 @@ import com.arka.microservice.customer_ms.domain.model.UserModel;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Table(name = "user_management.addresses")
 @Data
