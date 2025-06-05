@@ -81,10 +81,10 @@ public class UserUseCaseImpl implements IUserInPort {
   public Mono<UserModel> registerAdmin(UserModel userModel) {
     return getAuthenticatedEmail()
             .flatMap(userOutPort::findByEmail)
-            .switchIfEmpty(Mono.error(new RuntimeException("Usuario autenticado no encontrado")))
+            .switchIfEmpty(Mono.error(new RuntimeException(USER_AUTHENTICATED_NOT_FOUND)))
             .flatMap(authUser -> rolOutPort.findById(authUser.getRoleId())
                     .filter(rol -> "ROLE_ADMIN".equals(rol.getName()))
-                    .switchIfEmpty(Mono.error(new RuntimeException("No tienes permisos para crear otro administrador"))))
+                    .switchIfEmpty(Mono.error(new RuntimeException(USER_PERMISSION_DENIED))))
             .then(rolOutPort.findByName(ADMIN_ROLE_NAME)
                     .map(RolModel::getId))
             .flatMap(adminRoleId -> Mono.just(userModel)
@@ -126,6 +126,54 @@ public class UserUseCaseImpl implements IUserInPort {
     return usersFlux
             .skip(page * 50)
             .take(50);
+  }
+
+  @Override
+  public Mono<UserModel> registerAdminLogistic(UserModel adminLogistic) {
+    return getAuthenticatedEmail()
+            .flatMap(userOutPort::findByEmail)
+            .switchIfEmpty(Mono.error(new RuntimeException(USER_AUTHENTICATED_NOT_FOUND)))
+            .flatMap(authUser -> rolOutPort.findById(authUser.getRoleId())
+                    .filter(rol -> "ROLE_ADMIN".equals(rol.getName()))
+                    .switchIfEmpty(Mono.error(new RuntimeException(USER_PERMISSION_DENIED))))
+            .then(rolOutPort.findByName(ADMIN_LOGISTIC_ROLE_NAME)
+                    .map(RolModel::getId))
+            .flatMap(logisticRoleId -> Mono.just(adminLogistic)
+                    .flatMap(user -> Mono.when(
+                            UserValidation.validateFirstName(user.getFirstName()),
+                            UserValidation.validateEmail(user.getEmail()),
+                            UserValidation.validatePhone(user.getPhone()),
+                            UserValidation.validatePassword(user.getPassword())
+                    ).thenReturn(user))
+                    .flatMap(user -> Mono.when(
+                            validateEmailDoesNotExist(user.getEmail()),
+                            validateDniDoesNotExist(user.getDni())
+                    ).thenReturn(user))
+                    .map(user -> {
+                      user.setRoleId(logisticRoleId);
+                      user.setIsActive(true);
+                      user.setCreatedAt(LocalDateTime.now());
+                      user.setUpdatedAt(LocalDateTime.now());
+                      return user;
+                    })
+                    .flatMap(this::encodePassword)
+                    .flatMap(userOutPort::save));
+  }
+
+  @Override
+  public Mono<UserModel> getAdminLogistic(Long id) {
+    return userOutPort.findById(id)
+            .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+            .flatMap(user ->
+                    rolOutPort.findById(user.getRoleId())
+                            .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+                            .flatMap(rol -> {
+                              if (!ADMIN_LOGISTIC_ROLE_NAME.equals(rol.getName())) {
+                                return Mono.error(new RuntimeException(NOT_ADMIN_LOGISTIC));
+                              }
+                              return Mono.just(user);
+                            })
+            );
   }
 
   private Mono<UserModel> validateProfileUpdate(UserModel existingUser, UserModel updatedUser) {

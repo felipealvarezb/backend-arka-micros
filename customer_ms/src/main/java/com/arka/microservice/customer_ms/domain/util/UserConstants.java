@@ -21,7 +21,12 @@ public class UserConstants {
   public static final String PHONE_FORMAT_ERROR = "Invalid Phone format";
   public static final String DNI_ALREADY_EXISTS = "DNI already exists";
   public static final String USER_ROLE_NAME = "ROLE_USER";
+  public static final String ADMIN_LOGISTIC_ROLE_NAME = "ROLE_ADMIN_LOGISTIC";
   public static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
   public static final String USER_ROLE_NOT_FOUND = "User role not found";
   public static final String USER_NOT_FOUND = "User not found";
+  public static final String USER_AUTHENTICATED_NOT_FOUND = "User authenticated not found";
+  public static final String USER_PERMISSION_DENIED = "User doesn't have permission to create an admin";
+  public static final String NOT_ADMIN_LOGISTIC = "This user is not an admin logistic";
+
 }
