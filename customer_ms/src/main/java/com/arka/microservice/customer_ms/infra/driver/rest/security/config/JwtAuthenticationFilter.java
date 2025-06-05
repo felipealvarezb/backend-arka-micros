@@ -30,7 +30,6 @@ import static com.arka.microservice.customer_ms.domain.util.SecurityConstants.*;
 public class JwtAuthenticationFilter implements WebFilter {
 
   private static final String ERR_INVALID_TOKEN  = "ERR_INVALID_TOKEN";
-  private static final String ERR_EXPIRED_TOKEN  = "ERR_EXPIRED_TOKEN";
 
   private final JwtUtil jwtUtil;
   private final ReactiveUserDetailsService userDetailsService;
