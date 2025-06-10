@@ -20,15 +20,13 @@ import static com.arka.microservice.stock_ms.domain.util.BrandConstant.*;
 public class BrandUseCaseImpl implements IBrandInPort {
 
   private final IBrandOutPort brandOutPort;
-  private final IBrandMapper brandMapper;
 
   @Override
   public Mono<BrandModel> createBrand(BrandModel brandModel) {
     return Mono.when(
             BrandValidation.validateName(brandModel.getName()),
-            CategoryValidation.validateDescription(brandModel.getDescription())
-          )
-            .then(brandOutPort.findByName(brandModel.getName())
+            BrandValidation.validateDescription(brandModel.getDescription())
+          ).then(brandOutPort.findByName(brandModel.getName())
                     .flatMap(existingBrand -> existingBrand != null
                             ? Mono.error(new RuntimeException(BRAND_NAME_ALREADY_EXISTS))
                             : Mono.just(brandModel))
@@ -38,7 +36,7 @@ public class BrandUseCaseImpl implements IBrandInPort {
                       brandModel.setUpdatedAt(LocalDateTime.now());
                       return brandOutPort.save(brandModel);
                     }))
-            );
+          );
   }
 
   @Override

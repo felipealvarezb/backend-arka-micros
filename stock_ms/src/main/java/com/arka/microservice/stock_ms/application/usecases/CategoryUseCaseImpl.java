@@ -19,7 +19,6 @@ import static com.arka.microservice.stock_ms.domain.util.CategoryConstant.*;
 public class CategoryUseCaseImpl implements ICategoryInPort {
 
   private final ICategoryOutPort categoryOutPort;
-  private final ICategoryMapper categoryMapper;
 
   @Override
   public Mono<CategoryModel> createCategory(CategoryModel categoryModel) {
