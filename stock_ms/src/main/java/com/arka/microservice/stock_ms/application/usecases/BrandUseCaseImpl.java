@@ -1,5 +1,7 @@
 package com.arka.microservice.stock_ms.application.usecases;
 
+import com.arka.microservice.stock_ms.domain.exception.DuplicateResourceException;
+import com.arka.microservice.stock_ms.domain.exception.NotFoundException;
 import com.arka.microservice.stock_ms.domain.model.BrandModel;
 import com.arka.microservice.stock_ms.domain.ports.in.IBrandInPort;
 import com.arka.microservice.stock_ms.domain.ports.out.IBrandOutPort;
@@ -28,7 +30,7 @@ public class BrandUseCaseImpl implements IBrandInPort {
             BrandValidation.validateDescription(brandModel.getDescription())
           ).then(brandOutPort.findByName(brandModel.getName())
                     .flatMap(existingBrand -> existingBrand != null
-                            ? Mono.error(new RuntimeException(BRAND_NAME_ALREADY_EXISTS))
+                            ? Mono.error(new DuplicateResourceException(BRAND_NAME_ALREADY_EXISTS))
                             : Mono.just(brandModel))
                     .switchIfEmpty(Mono.defer(() -> {
                       brandModel.setName(brandModel.getName().toLowerCase());
@@ -42,7 +44,7 @@ public class BrandUseCaseImpl implements IBrandInPort {
   @Override
   public Mono<BrandModel> updateBrand(Long id, BrandModel brandModel) {
     return brandOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(BRAND_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(BRAND_NOT_FOUND)))
             .flatMap(existingBrand ->
                     Mono.when(
                             BrandValidation.validateName(brandModel.getName()),
@@ -51,7 +53,7 @@ public class BrandUseCaseImpl implements IBrandInPort {
             .flatMap(existingBrand -> brandOutPort.findByName((brandModel.getName()))
                     .filter(category -> !category.getId().equals(id))
                     .flatMap(category -> existingBrand != null
-                            ? Mono.error(new RuntimeException(BRAND_NAME_ALREADY_EXISTS))
+                            ? Mono.error(new DuplicateResourceException(BRAND_NAME_ALREADY_EXISTS))
                             : Mono.just(brandModel))
                     .switchIfEmpty(Mono.defer(() -> {
                       existingBrand.setName(brandModel.getName().toLowerCase());
@@ -71,7 +73,7 @@ public class BrandUseCaseImpl implements IBrandInPort {
   @Override
   public Mono<String> deleteBrand(Long id) {
     return brandOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(BRAND_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(BRAND_NOT_FOUND)))
             .flatMap(brand -> brandOutPort.delete(id)
                     .thenReturn(BRAND_DELETED_SUCCESSFULLY));
   }

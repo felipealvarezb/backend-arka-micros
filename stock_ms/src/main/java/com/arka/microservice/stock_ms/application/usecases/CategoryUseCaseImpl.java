@@ -1,5 +1,7 @@
 package com.arka.microservice.stock_ms.application.usecases;
 
+import com.arka.microservice.stock_ms.domain.exception.DuplicateResourceException;
+import com.arka.microservice.stock_ms.domain.exception.NotFoundException;
 import com.arka.microservice.stock_ms.domain.model.CategoryModel;
 import com.arka.microservice.stock_ms.domain.ports.in.ICategoryInPort;
 import com.arka.microservice.stock_ms.domain.ports.out.ICategoryOutPort;
@@ -28,7 +30,7 @@ public class CategoryUseCaseImpl implements ICategoryInPort {
             )
             .then(categoryOutPort.findByName(categoryModel.getName())
                     .flatMap(existingCategory -> existingCategory != null
-                            ? Mono.error(new RuntimeException(CATEGORY_NAME_ALREADY_EXISTS))
+                            ? Mono.error(new DuplicateResourceException(CATEGORY_NAME_ALREADY_EXISTS))
                             : Mono.just(categoryModel))
                     .switchIfEmpty(Mono.defer(() -> {
                       categoryModel.setName(categoryModel.getName().toLowerCase());
@@ -43,7 +45,7 @@ public class CategoryUseCaseImpl implements ICategoryInPort {
   @Override
   public Mono<CategoryModel> updateCategory(Long id, CategoryModel categoryModel) {
     return categoryOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(CATEGORY_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(CATEGORY_NOT_FOUND)))
             .flatMap(existingCategory ->
                     Mono.when(
                             CategoryValidation.validateName(categoryModel.getName()),
@@ -52,7 +54,7 @@ public class CategoryUseCaseImpl implements ICategoryInPort {
             .flatMap(existingCategory -> categoryOutPort.findByName(categoryModel.getName())
                     .filter(category -> !category.getId().equals(id))
                     .flatMap(category -> existingCategory != null
-                            ? Mono.error(new RuntimeException(CATEGORY_NAME_ALREADY_EXISTS))
+                            ? Mono.error(new DuplicateResourceException(CATEGORY_NAME_ALREADY_EXISTS))
                             : Mono.just(categoryModel))
                     .switchIfEmpty(Mono.defer(() -> {
                       existingCategory.setName(categoryModel.getName().toLowerCase());
@@ -72,7 +74,7 @@ public class CategoryUseCaseImpl implements ICategoryInPort {
   @Override
   public Mono<String> deleteCategory(Long id) {
     return categoryOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(CATEGORY_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(CATEGORY_NOT_FOUND)))
             .flatMap(category -> categoryOutPort.delete(id)
                     .thenReturn(CATEGORY_DELETED_SUCCESSFULLY));
   }

@@ -1,5 +1,7 @@
 package com.arka.microservice.stock_ms.application.usecases;
 
+import com.arka.microservice.stock_ms.domain.exception.DuplicateResourceException;
+import com.arka.microservice.stock_ms.domain.exception.NotFoundException;
 import com.arka.microservice.stock_ms.domain.model.SupplierModel;
 import com.arka.microservice.stock_ms.domain.ports.in.ISupplierInPort;
 import com.arka.microservice.stock_ms.domain.ports.out.ISupplierOutPort;
@@ -43,7 +45,7 @@ public class SupplierUseCaseImpl implements ISupplierInPort {
   @Override
   public Mono<SupplierModel> updateSupplier(Long id, SupplierModel supplierModel) {
     return supplierOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(SUPPLIER_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(SUPPLIER_NOT_FOUND)))
             .flatMap(existingSupplier -> {
               existingSupplier.setName(supplierModel.getName());
               existingSupplier.setEmail(supplierModel.getEmail());
@@ -63,7 +65,7 @@ public class SupplierUseCaseImpl implements ISupplierInPort {
   @Override
   public Mono<String> deleteSupplier(Long id) {
     return supplierOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(SUPPLIER_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(SUPPLIER_NOT_FOUND)))
             .flatMap(supplier -> supplierOutPort.delete(id)
                     .thenReturn(SUPPLIER_DELETED_SUCCESSFULLY));
   }
@@ -71,7 +73,7 @@ public class SupplierUseCaseImpl implements ISupplierInPort {
   private Mono<Void> validateEmailDoesNotExist(String email) {
     return supplierOutPort.findByEmail(email)
             .flatMap(user -> user != null
-                    ? Mono.error(new RuntimeException(SUPPLIER_EMAIL_ALREADY_EXISTS))
+                    ? Mono.error(new DuplicateResourceException(SUPPLIER_EMAIL_ALREADY_EXISTS))
                     : Mono.empty()
             );
   }
