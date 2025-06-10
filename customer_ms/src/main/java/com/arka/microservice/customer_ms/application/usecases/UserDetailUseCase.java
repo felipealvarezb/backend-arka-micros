@@ -27,7 +27,7 @@ public class UserDetailUseCase implements ReactiveUserDetailsService {
   public Mono<UserDetails> findByUsername(String username) {
     return userOutPort.findByEmail(username)
             .flatMap(userModel -> rolOutPort.findById(userModel.getRoleId())
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(USER_ROLE_NOT_FOUND)))
                     .map(rol -> User.builder()
                             .username(userModel.getEmail())
                             .password(userModel.getPassword())

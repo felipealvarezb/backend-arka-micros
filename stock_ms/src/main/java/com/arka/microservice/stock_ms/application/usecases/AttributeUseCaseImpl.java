@@ -1,5 +1,7 @@
 package com.arka.microservice.stock_ms.application.usecases;
 
+import com.arka.microservice.stock_ms.domain.exception.DuplicateResourceException;
+import com.arka.microservice.stock_ms.domain.exception.NotFoundException;
 import com.arka.microservice.stock_ms.domain.model.AttributeModel;
 import com.arka.microservice.stock_ms.domain.ports.in.IAttributeInPort;
 import com.arka.microservice.stock_ms.domain.ports.out.IAttributeOutPort;
@@ -26,7 +28,7 @@ public class AttributeUseCaseImpl implements IAttributeInPort {
             AttributeValidation.validateDescription(attributeModel.getDescription())
            ).then(attributeOutPort.findByName(attributeModel.getName()))
               .flatMap(existingAttribute -> existingAttribute != null
-                      ? Mono.error(new RuntimeException("Attribute with the same name already exists"))
+                      ? Mono.error(new DuplicateResourceException(ATTRIBUTE_NAME_ALREADY_EXISTS))
                       : Mono.just(attributeModel))
               .switchIfEmpty(Mono.defer(() -> {
                         attributeModel.setName(attributeModel.getName().toLowerCase());
@@ -40,7 +42,7 @@ public class AttributeUseCaseImpl implements IAttributeInPort {
   @Override
   public Mono<AttributeModel> updateAttribute(Long id, AttributeModel attributeModel) {
     return attributeOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(ATTRIBUTE_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(ATTRIBUTE_NOT_FOUND)))
             .flatMap(existingAttribute ->
                     Mono.when(
                             AttributeValidation.validateName(attributeModel.getName()),
@@ -49,7 +51,7 @@ public class AttributeUseCaseImpl implements IAttributeInPort {
             .flatMap(existingAttribute -> attributeOutPort.findByName((attributeModel.getName()))
                     .filter(attribute -> !attribute.getId().equals(id))
                     .flatMap(attribute -> existingAttribute != null
-                            ? Mono.error(new RuntimeException(ATTRIBUTE_NAME_ALREADY_EXISTS))
+                            ? Mono.error(new DuplicateResourceException(ATTRIBUTE_NAME_ALREADY_EXISTS))
                             : Mono.just(attributeModel))
                     .switchIfEmpty(Mono.defer(() -> {
                       existingAttribute.setName(attributeModel.getName().toLowerCase());
@@ -69,7 +71,7 @@ public class AttributeUseCaseImpl implements IAttributeInPort {
   @Override
   public Mono<String> deleteAttribute(Long id) {
     return attributeOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(ATTRIBUTE_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(ATTRIBUTE_NOT_FOUND)))
             .flatMap(attribute -> attributeOutPort.delete(id)
                     .thenReturn(ATTRIBUTE_DELETED_SUCCESSFULLY));
   }

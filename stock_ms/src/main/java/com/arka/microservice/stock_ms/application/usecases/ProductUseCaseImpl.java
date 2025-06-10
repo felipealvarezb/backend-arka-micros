@@ -1,5 +1,6 @@
 package com.arka.microservice.stock_ms.application.usecases;
 
+import com.arka.microservice.stock_ms.domain.exception.NotFoundException;
 import com.arka.microservice.stock_ms.domain.model.ProductModel;
 import com.arka.microservice.stock_ms.domain.ports.in.IProductInPort;
 import com.arka.microservice.stock_ms.domain.ports.out.IBrandOutPort;
@@ -38,7 +39,7 @@ public class ProductUseCaseImpl implements IProductInPort {
                     ).thenReturn(product))
             .flatMap(product ->
                     categoryOutPort.findById(product.getCategoryId())
-                            .switchIfEmpty(Mono.error(new RuntimeException(CATEGORY_NOT_FOUND)))
+                            .switchIfEmpty(Mono.error(new NotFoundException(CATEGORY_NOT_FOUND)))
                             .map(category -> {
                               product.setCategoryId(category.getId());
                               return product;
@@ -46,7 +47,7 @@ public class ProductUseCaseImpl implements IProductInPort {
             )
             .flatMap(product ->
                     brandOutPort.findById(product.getBrandId())
-                            .switchIfEmpty(Mono.error(new RuntimeException(BRAND_NOT_FOUND)))
+                            .switchIfEmpty(Mono.error(new NotFoundException(BRAND_NOT_FOUND)))
                             .map(brand -> {
                               product.setBrandId(brand.getId());
                               return product;
@@ -65,7 +66,7 @@ public class ProductUseCaseImpl implements IProductInPort {
   @Override
   public Mono<ProductModel> updateProduct(Long id, ProductModel productModel) {
     return productOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(PRODUCT_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(PRODUCT_NOT_FOUND)))
             .flatMap(existingProduct ->
                     Mono.when(
                             ProductValidation.validateName(productModel.getName()),
@@ -76,7 +77,7 @@ public class ProductUseCaseImpl implements IProductInPort {
             )
             .flatMap(existingProduct ->
                     categoryOutPort.findById(productModel.getCategoryId())
-                            .switchIfEmpty(Mono.error(new RuntimeException(CATEGORY_NOT_FOUND)))
+                            .switchIfEmpty(Mono.error(new NotFoundException(CATEGORY_NOT_FOUND)))
                             .map(category -> {
                               existingProduct.setCategoryId(category.getId());
                               return existingProduct;
@@ -84,7 +85,7 @@ public class ProductUseCaseImpl implements IProductInPort {
             )
             .flatMap(existingProduct ->
                     brandOutPort.findById(productModel.getBrandId())
-                            .switchIfEmpty(Mono.error(new RuntimeException(BRAND_NOT_FOUND)))
+                            .switchIfEmpty(Mono.error(new NotFoundException(BRAND_NOT_FOUND)))
                             .map(brand -> {
                               existingProduct.setBrandId(brand.getId());
                               return existingProduct;
@@ -105,7 +106,7 @@ public class ProductUseCaseImpl implements IProductInPort {
   @Override
   public Mono<ProductModel> getProduct(Long id) {
     return productOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(PRODUCT_NOT_FOUND)));
+            .switchIfEmpty(Mono.error(new NotFoundException(PRODUCT_NOT_FOUND)));
   }
 
   @Override
@@ -117,7 +118,7 @@ public class ProductUseCaseImpl implements IProductInPort {
   @Override
   public Mono<String> deleteProduct(Long id) {
     return productOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(PRODUCT_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(PRODUCT_NOT_FOUND)))
             .flatMap(product -> productOutPort.delete(id)
                     .thenReturn(PRODUCT_DELETED_SUCCESSFULLY));
   }

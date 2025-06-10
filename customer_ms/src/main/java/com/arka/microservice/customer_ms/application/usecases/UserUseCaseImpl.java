@@ -1,5 +1,8 @@
 package com.arka.microservice.customer_ms.application.usecases;
 
+import com.arka.microservice.customer_ms.domain.exception.DuplicateResourceException;
+import com.arka.microservice.customer_ms.domain.exception.NotFoundException;
+import com.arka.microservice.customer_ms.domain.exception.UnauthorizedException;
 import com.arka.microservice.customer_ms.domain.model.RolModel;
 import com.arka.microservice.customer_ms.domain.model.UserModel;
 import com.arka.microservice.customer_ms.domain.ports.in.IUserInPort;
@@ -30,7 +33,7 @@ public class UserUseCaseImpl implements IUserInPort {
   @Override
   public Mono<UserModel> registerUser(UserModel userModel) {
     Mono<Long> rolIdMono = rolOutPort.findByName(USER_ROLE_NAME)
-            .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(USER_ROLE_NOT_FOUND)))
             .map(RolModel::getId)
             .cache();
 
@@ -63,7 +66,7 @@ public class UserUseCaseImpl implements IUserInPort {
   public Mono<UserModel> getUserProfileInfo() {
     return getAuthenticatedEmail()
             .flatMap(email -> userOutPort.findByEmail(email)
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(USER_NOT_FOUND)))
             );
   }
 
@@ -71,7 +74,7 @@ public class UserUseCaseImpl implements IUserInPort {
   public Mono<UserModel> updateUserProfile(UserModel userModel) {
     return getAuthenticatedEmail()
             .flatMap(email -> userOutPort.findByEmail(email)
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+                    .switchIfEmpty(Mono.error(new NotFoundException(USER_NOT_FOUND)))
                     .flatMap(existingUser -> validateProfileUpdate(existingUser, userModel))
                     .flatMap(userOutPort::save)
             );
@@ -81,10 +84,10 @@ public class UserUseCaseImpl implements IUserInPort {
   public Mono<UserModel> registerAdmin(UserModel userModel) {
     return getAuthenticatedEmail()
             .flatMap(userOutPort::findByEmail)
-            .switchIfEmpty(Mono.error(new RuntimeException(USER_AUTHENTICATED_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(USER_AUTHENTICATED_NOT_FOUND)))
             .flatMap(authUser -> rolOutPort.findById(authUser.getRoleId())
                     .filter(rol -> "ROLE_ADMIN".equals(rol.getName()))
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_PERMISSION_DENIED))))
+                    .switchIfEmpty(Mono.error(new UnauthorizedException(USER_PERMISSION_DENIED))))
             .then(rolOutPort.findByName(ADMIN_ROLE_NAME)
                     .map(RolModel::getId))
             .flatMap(adminRoleId -> Mono.just(userModel)
@@ -132,10 +135,10 @@ public class UserUseCaseImpl implements IUserInPort {
   public Mono<UserModel> registerAdminLogistic(UserModel adminLogistic) {
     return getAuthenticatedEmail()
             .flatMap(userOutPort::findByEmail)
-            .switchIfEmpty(Mono.error(new RuntimeException(USER_AUTHENTICATED_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(USER_AUTHENTICATED_NOT_FOUND)))
             .flatMap(authUser -> rolOutPort.findById(authUser.getRoleId())
                     .filter(rol -> "ROLE_ADMIN".equals(rol.getName()))
-                    .switchIfEmpty(Mono.error(new RuntimeException(USER_PERMISSION_DENIED))))
+                    .switchIfEmpty(Mono.error(new UnauthorizedException(USER_PERMISSION_DENIED))))
             .then(rolOutPort.findByName(ADMIN_LOGISTIC_ROLE_NAME)
                     .map(RolModel::getId))
             .flatMap(logisticRoleId -> Mono.just(adminLogistic)
@@ -163,13 +166,13 @@ public class UserUseCaseImpl implements IUserInPort {
   @Override
   public Mono<UserModel> getAdminLogistic(Long id) {
     return userOutPort.findById(id)
-            .switchIfEmpty(Mono.error(new RuntimeException(USER_NOT_FOUND)))
+            .switchIfEmpty(Mono.error(new NotFoundException(USER_NOT_FOUND)))
             .flatMap(user ->
                     rolOutPort.findById(user.getRoleId())
-                            .switchIfEmpty(Mono.error(new RuntimeException(USER_ROLE_NOT_FOUND)))
+                            .switchIfEmpty(Mono.error(new NotFoundException(USER_ROLE_NOT_FOUND)))
                             .flatMap(rol -> {
                               if (!ADMIN_LOGISTIC_ROLE_NAME.equals(rol.getName())) {
-                                return Mono.error(new RuntimeException(NOT_ADMIN_LOGISTIC));
+                                return Mono.error(new UnauthorizedException(NOT_ADMIN_LOGISTIC));
                               }
                               return Mono.just(user);
                             })
@@ -202,7 +205,7 @@ public class UserUseCaseImpl implements IUserInPort {
   private Mono<Void> validateEmailDoesNotExist(String email) {
     return userOutPort.findByEmail(email)
             .flatMap(user -> user != null
-                    ? Mono.error(new RuntimeException(EMAIL_ALREADY_EXISTS))
+                    ? Mono.error(new DuplicateResourceException(EMAIL_ALREADY_EXISTS))
                     : Mono.empty()
             );
   }
@@ -210,7 +213,7 @@ public class UserUseCaseImpl implements IUserInPort {
   private Mono<Void> validateDniDoesNotExist(String dni) {
     return userOutPort.findByDni(dni)
             .flatMap(user -> user != null
-                    ? Mono.error(new RuntimeException(DNI_ALREADY_EXISTS))
+                    ? Mono.error(new DuplicateResourceException(DNI_ALREADY_EXISTS))
                     : Mono.empty()
             );
 
