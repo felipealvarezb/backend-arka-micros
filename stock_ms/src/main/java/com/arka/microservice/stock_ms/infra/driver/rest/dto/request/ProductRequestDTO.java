@@ -1,17 +1,13 @@
-package com.arka.microservice.stock_ms.domain.model;
+package com.arka.microservice.stock_ms.infra.driver.rest.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductModel {
-  private Long id;
-  private String sku;
+public class ProductRequestDTO {
   private String name;
   private String description;
   private String imageUrl;
@@ -19,6 +15,4 @@ public class ProductModel {
   private Boolean isActive;
   private Long categoryId;
   private Long brandId;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
 }

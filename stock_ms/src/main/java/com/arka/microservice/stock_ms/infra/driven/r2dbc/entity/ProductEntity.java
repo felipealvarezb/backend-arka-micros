@@ -6,11 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Table(name = "catalog_management.products")
 @Data
@@ -21,6 +19,9 @@ public class ProductEntity {
   @Id
   @Column("id")
   private Long id;
+
+  @Column("sku")
+  private String sku;
 
   @Column("name")
   private String name;

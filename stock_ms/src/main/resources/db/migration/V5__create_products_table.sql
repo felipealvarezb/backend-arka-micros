@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS catalog_management.products (
     id BIGSERIAL PRIMARY KEY,
+    sku VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     image_url VARCHAR(255),
