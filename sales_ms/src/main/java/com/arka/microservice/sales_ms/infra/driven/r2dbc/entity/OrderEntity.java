@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "orders")
@@ -34,8 +34,8 @@ public class OrderEntity {
   private List<Long> orderDetailIds;
 
   @Column("created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }

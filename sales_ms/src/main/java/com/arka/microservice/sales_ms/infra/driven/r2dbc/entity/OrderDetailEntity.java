@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Table(name = "order_details")
 @Data
@@ -28,15 +27,14 @@ public class OrderDetailEntity {
   private Double subtotal;
 
   @Column("order_id")
-  @MappedCollection(idColumn = "id")
   private Long orderId;
 
   @Column("product_id")
   private Long productId;
 
   @Column("created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }

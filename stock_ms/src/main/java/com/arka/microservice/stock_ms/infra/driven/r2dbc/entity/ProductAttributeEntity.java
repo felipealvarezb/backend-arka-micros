@@ -26,6 +26,9 @@ public class ProductAttributeEntity {
   @Column("attribute_id")
   private Long attributeId;
 
+  @Column("attribute_value")
+  private String attributeValue;
+
   @Column("created_at")
   private LocalDateTime createdAt;
 

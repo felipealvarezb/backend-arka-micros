@@ -3,9 +3,8 @@ package com.arka.microservice.sales_ms.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.relational.core.mapping.Column;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,10 +15,6 @@ public class CartDetailModel {
   private CartModel cart;
   private Long productId;
   private Float subtotal;
-
-  @Column("created_at")
-  private Date createdAt;
-
-  @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 }

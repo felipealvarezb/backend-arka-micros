@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Table(name = "cart_details")
 @Data
@@ -35,8 +35,8 @@ public class CartDetailEntity {
   private Float subtotal;
 
   @Column("created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }

@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS catalog_management.product_attributes (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
     attribute_id BIGINT NOT NULL,
+    attribute_value TEXT NOT NULL,
     created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     updated_at  TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT fk_product_attribute_product
