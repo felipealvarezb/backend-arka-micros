@@ -13,6 +13,7 @@ public class ProductAttributeModel {
   private Long id;
   private Long productId;
   private Long attributeId;
+  private String attributeValue;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }

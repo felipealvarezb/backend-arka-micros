@@ -6,10 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Table(name = "payments")
 @Data
@@ -31,12 +30,11 @@ public class PaymentEntity {
   private String status;
 
   @Column("order_id")
-  @MappedCollection(idColumn = "id")
   private Long orderId;
 
   @Column("created_at")
-  private Date createdAt;
+  private LocalDateTime createdAt;
 
   @Column("updated_at")
-  private Date updatedAt;
+  private LocalDateTime updatedAt;
 }
