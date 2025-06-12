@@ -19,5 +19,5 @@ public class ProductConstant {
   public static final String PRODUCT_IMAGE_URL_LENGTH_ERROR = "Product image must be less than 255 characters";
   public static final double PRODUCT_PRICE_MIN_VALUE = 0;
   public static final String PRODUCT_PRICE_PRICE_ERROR = "Product price must be greater than 0";
-
+  public static final String PRODUCT_ATTRIBUTE_NOT_FOUND = "Product does not have this attribute";
 }

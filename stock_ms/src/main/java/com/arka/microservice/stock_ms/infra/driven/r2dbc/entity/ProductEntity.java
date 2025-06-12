@@ -19,34 +19,24 @@ public class ProductEntity {
   @Id
   @Column("id")
   private Long id;
-
   @Column("sku")
   private String sku;
-
   @Column("name")
   private String name;
-
   @Column("description")
   private String description;
-
   @Column("image_url")
   private String imageUrl;
-
   @Column("price")
   private Double price;
-
   @Column("is_active")
   private Boolean isActive;
-
   @Column("category_id")
   private Long categoryId;
-
   @Column("brand_id")
   private Long brandId;
-
   @Column("created_at")
   private LocalDateTime createdAt;
-
   @Column("updated_at")
   private LocalDateTime updatedAt;
 }
