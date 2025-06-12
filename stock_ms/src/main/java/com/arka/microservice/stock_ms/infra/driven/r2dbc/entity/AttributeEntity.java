@@ -19,16 +19,12 @@ public class AttributeEntity {
   @Id
   @Column("id")
   private Long id;
-
   @Column("name")
   private String name;
-
   @Column("description")
   private String description;
-
   @Column("created_at")
   private LocalDateTime createdAt;
-
   @Column("updated_at")
   private LocalDateTime updatedAt;
 }

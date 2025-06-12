@@ -19,19 +19,14 @@ public class ProductAttributeEntity {
   @Id
   @Column("id")
   private Long id;
-
   @Column("product_id")
   private Long productId;
-
   @Column("attribute_id")
   private Long attributeId;
-
   @Column("attribute_value")
   private String attributeValue;
-
   @Column("created_at")
   private LocalDateTime createdAt;
-
   @Column("updated_at")
   private LocalDateTime updatedAt;
 }
