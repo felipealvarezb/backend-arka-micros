@@ -19,25 +19,18 @@ public class InventoryEntity {
   @Id
   @Column("id")
   private Long id;
-
   @Column("actual_stock")
   private Integer actualStock;
-
   @Column("min_stock")
   private Integer minStock;
-
   @Column("product_id")
   private Long productId;
-
   @Column("country_id")
   private Long countryId;
-
   @Column("supplier_id")
   private Long supplierId;
-
   @Column("created_at")
   private LocalDateTime createdAt;
-
   @Column("updated_at")
   private LocalDateTime updatedAt;
 }

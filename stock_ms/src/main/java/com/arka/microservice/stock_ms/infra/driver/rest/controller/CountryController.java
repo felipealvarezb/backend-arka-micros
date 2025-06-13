@@ -19,14 +19,14 @@ public class CountryController {
 
   @PostMapping("/create")
   @ResponseStatus(HttpStatus.CREATED)
-  public Mono<CountryResponseDTO> createBrand(@RequestBody CountryRequestDTO countryRequestDTO){
+  public Mono<CountryResponseDTO> createCountry(@RequestBody CountryRequestDTO countryRequestDTO){
     return countryInPort.createCountry(countryRestMapper.countryRequestToModel(countryRequestDTO))
             .map(countryRestMapper::countryModelToResponseDTO);
   }
 
   @PostMapping("/update/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public Mono<CountryResponseDTO> updateBrand(@PathVariable Long id, @RequestBody CountryRequestDTO countryRequestDTO){
+  public Mono<CountryResponseDTO> updateCountry(@PathVariable Long id, @RequestBody CountryRequestDTO countryRequestDTO){
     return countryInPort.updateCountry(id, countryRestMapper.countryRequestToModel(countryRequestDTO))
             .map(countryRestMapper::countryModelToResponseDTO);
   }
