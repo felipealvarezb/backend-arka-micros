@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CountryRequestDTO {
-  private String name;
-  private String logisticSupervisorId;
+@AllArgsConstructor
+public class StockRequestDTO {
+  private int quantity;
 }

@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryRequestDTO {
-  private String name;
-  private String logisticSupervisorId;
+public class AddProductInventoryRequestDTO {
+  private Integer actualStock;
+  private Integer minStock;
+  private Long productId;
+  private Long countryId;
+  private Long supplierId;
 }

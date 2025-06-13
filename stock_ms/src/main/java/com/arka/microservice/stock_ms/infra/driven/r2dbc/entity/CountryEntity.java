@@ -19,16 +19,12 @@ public class CountryEntity {
   @Id
   @Column("id")
   private Long id;
-
   @Column("name")
   private String name;
-
   @Column("logistic_supervisor_id")
   private Long logisticSupervisorId;
-
   @Column("created_at")
   private LocalDateTime createdAt;
-
   @Column("updated_at")
   private LocalDateTime updatedAt;
 }
