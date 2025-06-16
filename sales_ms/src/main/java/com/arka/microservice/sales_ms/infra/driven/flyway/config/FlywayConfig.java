@@ -1,4 +1,4 @@
-package com.arka.microservice.sales_ms.infra.driven.config;
+package com.arka.microservice.sales_ms.infra.driven.flyway.config;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
