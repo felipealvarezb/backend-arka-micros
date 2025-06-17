@@ -23,6 +23,11 @@ public class ResourceServerConfig {
     return http
             .csrf(csrf -> csrf.disable())
             .authorizeExchange(exchange -> exchange
+                    .pathMatchers("/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/webjars/**").permitAll()
                     .pathMatchers(HttpMethod.POST,
                             "/api/attribute/**",
                             "/api/category/**",

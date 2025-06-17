@@ -26,6 +26,11 @@ public class ResourceServerConfig {
                     .pathMatchers(HttpMethod.POST,
                             "/api/order/**",
                             "/api/cart/**").hasAuthority("ROLE_USER")
+                    .pathMatchers("/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/webjars/**").permitAll()
                     .pathMatchers(HttpMethod.PUT, "/api/order/**").hasAuthority("ROLE_ADMIN")
                     .pathMatchers(HttpMethod.DELETE, "/api/order/**",
                             "/api/cart/**").hasAuthority("ROLE_ADMIN")

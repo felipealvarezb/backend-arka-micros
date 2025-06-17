@@ -6,6 +6,8 @@ import com.arka.microservice.stock_ms.infra.driver.rest.dto.request.AddProductIn
 import com.arka.microservice.stock_ms.infra.driver.rest.dto.request.StockRequestDTO;
 import com.arka.microservice.stock_ms.infra.driver.rest.dto.response.InventoryResponseDTO;
 import com.arka.microservice.stock_ms.infra.driver.rest.mapper.IInventoryRestMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +17,13 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
+@Tag(name = "Inventory", description = "Gestión de inventario")
 public class InventoryController {
 
   private final IInventoryInPort inventoryInPort;
   private final IInventoryRestMapper inventoryRestMapper;
 
+  @Operation(summary = "Add Inventory to Product", description = "Create an inventory of product")
   @PostMapping("/product/{productId}")
   @ResponseStatus(HttpStatus.CREATED)
   public Mono<InventoryResponseDTO> addInventoryToProduct(
@@ -30,6 +34,7 @@ public class InventoryController {
             .map(inventoryRestMapper::modelToResponseDto);
   }
 
+  @Operation(summary = "Update Inventory to Product", description = "Update and save an existing Inventory")
   @PostMapping("{inventoryId}/product/{productId}/update")
   @ResponseStatus(HttpStatus.OK)
   public Mono<InventoryResponseDTO> updateInventoryForProduct(
@@ -41,6 +46,7 @@ public class InventoryController {
             .map(inventoryRestMapper::modelToResponseDto);
   }
 
+  @Operation(summary = "Remove Inventory from Product", description = "Remove stock from inventory")
   @PutMapping("{inventoryId}/product/{productId}/remove/stock")
   @ResponseStatus(HttpStatus.OK)
   public Mono<InventoryResponseDTO> removeInventoryFromProduct(
@@ -53,6 +59,7 @@ public class InventoryController {
             .map(inventoryRestMapper::modelToResponseDto);
   }
 
+  @Operation(summary = "Add Inventory from Product", description = "Add Stock to inventory")
   @PutMapping("{inventoryId}/product/{productId}/add/stock")
   @ResponseStatus(HttpStatus.OK)
   public Mono<InventoryResponseDTO> addInventoryToProduct(
@@ -66,6 +73,7 @@ public class InventoryController {
   }
 
 
+  @Operation(summary = "Get Inventory of Product", description = "Get the inventory of a product")
   @GetMapping("{productId}/inventories")
   @ResponseStatus(HttpStatus.OK)
   public Flux<InventoryResponseDTO> getInventoryOfProduct(@PathVariable Long productId){
