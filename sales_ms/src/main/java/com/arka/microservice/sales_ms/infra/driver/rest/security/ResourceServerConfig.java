@@ -26,14 +26,8 @@ public class ResourceServerConfig {
                     .pathMatchers(HttpMethod.POST,
                             "/api/order/**",
                             "/api/cart/**").hasAuthority("ROLE_USER")
-                    .pathMatchers(HttpMethod.PUT, "/api/attribute/**",
-                            "/api/order/**",
-                            "/api/cart/**").hasAuthority("ROLE_ADMIN")
-                    .pathMatchers(HttpMethod.DELETE, "/api/attribute/**",
-                            "/api/order/**",
-                            "/api/cart/**").hasAuthority("ROLE_ADMIN")
-                    .pathMatchers(HttpMethod.GET, "/api/attribute/**",
-                            "/api/order/**",
+                    .pathMatchers(HttpMethod.PUT, "/api/order/**").hasAuthority("ROLE_ADMIN")
+                    .pathMatchers(HttpMethod.DELETE, "/api/order/**",
                             "/api/cart/**").hasAuthority("ROLE_ADMIN")
                     .pathMatchers(HttpMethod.GET, "/api/order/**",
                             "/api/cart/**")
