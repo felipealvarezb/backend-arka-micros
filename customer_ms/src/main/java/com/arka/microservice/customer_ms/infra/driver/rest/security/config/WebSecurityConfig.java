@@ -23,6 +23,11 @@ public class WebSecurityConfig {
     return http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
+                    .pathMatchers("/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/webjars/**").permitAll()
                     .pathMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                     .pathMatchers(HttpMethod.POST, "/api/user/register").permitAll()
                     .pathMatchers(HttpMethod.GET, "/api/user/profile").hasAnyAuthority("ROLE_USER")
