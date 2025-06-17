@@ -1,6 +1,5 @@
 package com.arka.microservice.customer_ms.application.usecases;
 
-import com.arka.microservice.customer_ms.domain.exception.BusinessException;
 import com.arka.microservice.customer_ms.domain.exception.NotFoundException;
 import com.arka.microservice.customer_ms.domain.model.AddressModel;
 import com.arka.microservice.customer_ms.domain.ports.in.IAddressInPort;
