@@ -9,9 +9,8 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Table(name = "carts")
+@Table(name = "order_management.carts")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +25,6 @@ public class CartEntity {
 
   @Column("user_id")
   private Long userId;
-
-  @Column("cart_detail_id")
-  private List<Long> cartDetailIds;
 
   @Column("created_at")
   private LocalDateTime createdAt;

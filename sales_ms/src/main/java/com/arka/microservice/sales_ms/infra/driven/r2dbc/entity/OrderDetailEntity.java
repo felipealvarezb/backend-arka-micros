@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Table(name = "order_details")
+@Table(name = "order_management.order_details")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

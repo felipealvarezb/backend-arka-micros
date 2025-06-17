@@ -1,4 +1,4 @@
-package com.arka.microservice.sales_ms.infra.driven.webclient.config;
+package com.arka.microservice.customer_ms.infra.driven.webclient.config;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebClientConfig {
 
-  @Value("${webclient.catalog.baseUrl}")
-  private String inventoryBaseUrl;
+  @Value("${webclient.order.baseUrl}")
+  private String orderBaseUrl;
 
   private final SendTokenWebClient sendTokenWebClient;
 
@@ -27,8 +27,8 @@ public class WebClientConfig {
     this.sendTokenWebClient = sendTokenWebClient;
   }
 
-  @Bean(name = "inventoryApiClient")
-  public WebClient inventoryApiClient(WebClient.Builder builder) {
+  @Bean(name = "cartApiClient")
+  public WebClient cartApiClient(WebClient.Builder builder) {
     HttpClient httpClient = HttpClient.create()
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
             .responseTimeout(Duration.ofMillis(5000))
@@ -38,7 +38,7 @@ public class WebClientConfig {
             );
     return builder
             .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .baseUrl(inventoryBaseUrl)
+            .baseUrl(orderBaseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .filter(sendTokenWebClient.authHeaderFilter())
             .build();

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS order_management.carts (
+    id BIGSERIAL PRIMARY KEY,
+    status VARCHAR(15) NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITHOUT TIME ZONE
+);

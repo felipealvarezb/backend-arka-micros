@@ -3,8 +3,6 @@ package com.arka.microservice.stock_ms.infra.driven.webclient.config;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +29,15 @@ public class WebClientConfig {
 
   @Bean(name = "userApiClient")
   public WebClient userApiClient(WebClient.Builder builder) {
+    HttpClient httpClient = HttpClient.create()
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+            .responseTimeout(Duration.ofMillis(5000))
+            .doOnConnected( conn ->
+                    conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
+                            .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS))
+            );
     return builder
+            .clientConnector(new ReactorClientHttpConnector(httpClient))
             .baseUrl(userBaseUrl)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .filter(sendTokenWebClient.authHeaderFilter())

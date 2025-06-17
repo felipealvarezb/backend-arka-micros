@@ -15,7 +15,6 @@ public class OrderModel {
   private Long id;
   private String state;
   private Double total;
-  private List<OrderDetailModel> orderDetails;
   private Long userId;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

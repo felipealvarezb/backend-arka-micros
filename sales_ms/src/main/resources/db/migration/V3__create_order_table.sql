@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS order_management.orders (
+    id BIGSERIAL PRIMARY KEY,
+    state VARCHAR(20) NOT NULL,
+    total NUMERIC(10, 2) NOT NULL,
+    user_id BIGINT NOT NULL,
+    created_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMP WITHOUT TIME ZONE
+);

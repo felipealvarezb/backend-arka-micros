@@ -13,8 +13,8 @@ import java.util.List;
 public class CartModel {
   private Long id;
   private Long userId;
-  private List<CartDetailModel> cartDetails;
   private String status;
+  private List<CartDetailModel> cartDetails;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 }
